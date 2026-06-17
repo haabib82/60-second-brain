@@ -19,7 +19,9 @@ import {
   TrendingUp,
   Award,
   Star,
-  Play
+  Play,
+  ArrowUp,
+  Gamepad2
 } from "lucide-react";
 
 // Updated Cosmic Theme Game Configurations
@@ -109,6 +111,9 @@ export default function Dashboard() {
   const xTranslation = useMotionValue(0);
   const xPercent = useTransform(xTranslation, (value) => `${value}%`);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   // Animation frame ticking loop
   useAnimationFrame((_, delta) => {
     // Keep it entirely frozen if tracked carousel container is currently hovered
@@ -369,12 +374,87 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Global Minimal Dashboard Analytics Counter Footer Row */}
-        <footer className="w-full max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-white/5 gap-4">
-          <p className="text-xs text-slate-600 font-mono">© 2026 60S UNIVERSE ALL RIGHTS RESERVED.</p>
-          <div className="flex gap-6 text-xs text-slate-400 font-mono">
-            <span className="flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5 text-purple-400" /> GLOBAL RUNS: <b className="text-white">1,402,941</b></span>
+   <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 mt-20 border-t border-white/5 pt-12 pb-8">
+      {/* Top Grid Sections */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+        
+        {/* Left Column: About Us platform details */}
+        <div className="md:col-span-6 space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded bg-gradient-to-tr from-purple-600 to-cyan-400 flex items-center justify-center font-black text-[10px] text-black tracking-tighter">
+              60'S
+            </div>
+            <span className="text-xs font-black tracking-widest text-white">
+              60'S UNIVERSE
+            </span>
           </div>
-        </footer>
+          <p className="text-sm text-slate-400 leading-relaxed max-w-md">
+            A micro-gaming nebula built to challenge human cognitive limits. 
+            Test your reaction speed, train decision-making pathways, and sharp-tune your memory through lightning-fast, 60-second interactive trials. 
+          </p>
+        </div>
+
+        {/* Middle Column: Quick Links */}
+        <div className="md:col-span-3 space-y-3">
+          <h4 className="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">Core Arenas</h4>
+          <ul className="space-y-2 text-xs font-mono text-slate-400">
+            <li>
+              <Link href="/play/reaction" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                <Gamepad2 className="w-3 h-3" /> Reaction Test
+              </Link>
+            </li>
+            <li>
+              <Link href="/play/memory" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                <Gamepad2 className="w-3 h-3" /> Memory Burst
+              </Link>
+            </li>
+            <li>
+              <Link href="/play/focus" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                <Gamepad2 className="w-3 h-3" /> Focus Control
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Right Column: Socials & Interactivity */}
+        {/* <div className="md:col-span-3 space-y-4">
+          <h4 className="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">Connect & Compete</h4>
+          <div className="flex items-center gap-3">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 border border-white/5 text-slate-400 hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-300">
+              <Twitter className="w-4 h-4" />
+            </a>
+            <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 border border-white/5 text-slate-400 hover:text-purple-400 hover:border-purple-400/30 transition-all duration-300">
+              <Discord className="w-4 h-4" />
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-white/5 border border-white/5 text-slate-400 hover:text-white hover:border-white/30 transition-all duration-300">
+              <Github className="w-4 h-4" />
+            </a>
+          </div>
+        </div> */}
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-white/5 my-8" />
+
+      {/* Bottom Row: Legalities and Back to Top */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p className="text-[11px] font-mono text-slate-500 order-2 sm:order-1">
+          &copy; {new Date().getFullYear()} 60'S Universe. All mind assets loaded.
+        </p>
+
+        {/* Back to top button featuring the beam effect concept on hover */}
+        <button 
+          onClick={scrollToTop}
+          className="group relative overflow-hidden order-1 sm:order-2 flex items-center gap-2 text-[11px] font-mono text-slate-400 bg-white/5 border border-white/5 px-3 py-1.5 rounded-full backdrop-blur-md transition-all duration-300 hover:border-white/20 hover:text-white cursor-pointer"
+        >
+          {/* Subtle light beam moving up-right on hover */}
+          <div className="absolute inset-0 -translate-x-full translate-y-full group-hover:translate-x-full group-hover:-translate-y-full transition-transform duration-700 ease-out bg-gradient-to-tr from-transparent via-purple-500/20 to-transparent pointer-events-none" />
+          
+          <span>Return up</span>
+          <ArrowUp className="w-3.5 h-3.5 text-purple-400 group-hover:-translate-y-0.5 transition-transform duration-300" />
+        </button>
+      </div>
+    </footer>
 
       </div>
 

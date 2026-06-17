@@ -69,21 +69,30 @@ The core philosophy of this project is **strict component modularity**. Instead 
 ├── app/
 │   ├── play/
 │   │   └── [gameId]/
-│   │       └── page.tsx        # Dynamic route multiplexer / router 
-│   ├── layout.tsx              # Application layout context
-│   └── page.tsx                # Central dashboard landing deck
+│   │       └── page.tsx          # Dynamic game router
+│   │
+│   ├── layout.tsx               # Root application layout
+│   └── page.tsx                 # Dashboard / landing page
+│
 ├── components/
-│   └── games/
-│       ├── ui/                 # Shared UI structural wrappers
-│       │   ├── GameCountdownScreen.tsx
-│       │   ├── GameEndScreen.tsx
-│       │   ├── GameStartScreen.tsx
-│       │   └── GameWrapper.tsx
-│       ├── FocusGame.tsx       # Focus Grid specific game file 
-│       └── MemoryGame.tsx      # Memory specific game file (Logic-only)
-├── public/                     # Static layout optimization files
-├── next.config.ts              # Next.js optimization runtime
-├── tsconfig.json               # TypeScript path mapping aliases (@/*)
+│   ├── games/                  # 
+│   │   ├── ui/                 # Shared UI structural wrappers
+│   │   │   ├── GameCountdownScreen.tsx
+│   │   │   ├── GameEndScreen.tsx
+│   │   │   ├── GameStartScreen.tsx
+│   │   │   └── GameWrapper.tsx
+│   │   │
+│   │   ├── FocusGame.tsx
+│   │   └── MemoryGame.tsx
+│   │
+│   └── landing/
+│       ├── games.ts             # Game configuration/data
+│       └── LandingPage.tsx      # Hero + carousel + game grid
+│
+├── public/
+│
+├── next.config.ts               # Next.js configuration
+├── tsconfig.json                # TypeScript aliases (@/*)
 └── package.json
 
 ```

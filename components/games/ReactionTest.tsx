@@ -18,7 +18,6 @@ export default function F1ReactionGame() {
   const [streak, setStreak] = useState<number>(0);
 
   // F1 Core Light Mechanics
-  // Light sequence status: 0 = all off, 1 to 5 = lights lighting up, 6 = fully lit waiting to go out, 7 = LIGHTS OUT (GREEN/GO)
   const [lightPhase, setLightPhase] = useState<number>(0);
   const [feedback, setFeedback] = useState<{ text: string; color: string } | null>(null);
   const [isScreenShaking, setIsScreenShaking] = useState<boolean>(false);
@@ -30,11 +29,96 @@ export default function F1ReactionGame() {
   const lightsOutTimeRef = useRef<number>(0);
   const gameActiveRef = useRef<boolean>(false);
 
+  // Web Audio API Context Reference
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
   // Load high score locally on mount
   useEffect(() => {
     const saved = localStorage.getItem("60s_f1_best");
     if (saved) setBestScore(parseInt(saved, 10));
   }, []);
+
+  // Initialize Audio Context on user intent / client-side action to bypass browser policies
+  const initAudio = () => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    if (audioCtxRef.current.state === "suspended") {
+      audioCtxRef.current.resume();
+    }
+  };
+
+  // --- SYNTHETIC AUDIO GENERATION ENGINE ---
+  const playStagingBeep = () => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime); // High-pitched crisp F1 light-up ring
+
+    gainNode.gain.setValueAtTime(0.15, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1); // Short punchy burst
+
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.1);
+  };
+
+  const playLightsOutBuzz = () => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+
+    // Use two raw oscillators to synthesize a thick, rich green-light race horn
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    osc1.type = "sawtooth";
+    osc1.frequency.setValueAtTime(220, ctx.currentTime); // Sub-mid foundation
+
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(440, ctx.currentTime); // Crisp melodic double
+
+    gainNode.gain.setValueAtTime(0.2, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.2);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    osc1.start();
+    osc2.start();
+    osc1.stop(ctx.currentTime + 0.45);
+    osc2.stop(ctx.currentTime + 0.45);
+  };
+
+  const playPenaltyBuzzer = () => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    osc.type = "square";
+    osc.frequency.setValueAtTime(150, ctx.currentTime);
+    osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.35); // Dramatic failing pitch drop
+
+    gainNode.gain.setValueAtTime(0.25, ctx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+  };
+  // -----------------------------------------
 
   // 60 Second Core Countdown Engine
   useEffect(() => {
@@ -58,6 +142,7 @@ export default function F1ReactionGame() {
   // Handle pre-game countdown screen mechanics
   useEffect(() => {
     if (gameState === "COUNTDOWN") {
+      playStagingBeep(); // Pre-countdown UI feedback sound ticks
       const cdInterval = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -67,6 +152,7 @@ export default function F1ReactionGame() {
             triggerNewLightSequence();
             return 3;
           }
+          playStagingBeep();
           return prev - 1;
         });
       }, 800);
@@ -82,6 +168,7 @@ export default function F1ReactionGame() {
   }, []);
 
   const startGame = () => {
+    initAudio(); // Hook dynamic initialization directly into user interaction context
     setScore(0);
     setStreak(0);
     setTimer(60);
@@ -106,13 +193,10 @@ export default function F1ReactionGame() {
     });
   };
 
-  // Orchestrates the multi-layered layout sequence of an F1 Christmas Tree structure
   const triggerNewLightSequence = () => {
     if (!gameActiveRef.current) return;
     
-    // Reset phase back to completely dark before illuminating step indicators
     setLightPhase(0);
-    
     let currentStep = 0;
     
     const lightUpNextNode = () => {
@@ -120,39 +204,42 @@ export default function F1ReactionGame() {
       currentStep += 1;
       setLightPhase(currentStep);
 
+      if (currentStep <= 5) {
+        playStagingBeep(); // Sounds during sequential node lights up (Phases 1-5)
+      }
+
       if (currentStep < 5) {
-        // Fast escalation sound-matching visual pattern interval
         sequenceTimeoutRef.current = setTimeout(lightUpNextNode, 450);
       } else {
-        // Phase 6: All five pairs are burning hot red. Calculate arbitrary randomized delay before lights out.
+        // Phase 6: All five pairs are burning hot red. Dead silent dynamic pause window.
         setLightPhase(6);
         const randomLightsOutDelay = Math.floor(Math.random() * 2000) + 1200; // between 1.2s and 3.2s
         sequenceTimeoutRef.current = setTimeout(() => {
           if (!gameActiveRef.current) return;
-          setLightPhase(7); // LIGHTS OUT! GO!
+          
+          playLightsOutBuzz(); // Aggressive Green Launch Tone!
+          setLightPhase(7); 
           lightsOutTimeRef.current = performance.now();
         }, randomLightsOutDelay);
       }
     };
 
-    // Stagger first node kick-off
     sequenceTimeoutRef.current = setTimeout(lightUpNextNode, 400);
   };
 
-  // Standard non-lethal reactive strike parser for player input
   const handleTriggerInput = () => {
     if (gameState !== "PLAYING") return;
 
-    // SCENARIO A: FALSE START / JUMP START (Tapped when lights are staging or fully lit red)
+    // SCENARIO A: FALSE START / JUMP START
     if (lightPhase > 0 && lightPhase <= 6) {
       if (sequenceTimeoutRef.current) clearTimeout(sequenceTimeoutRef.current);
       
+      playPenaltyBuzzer(); // Instant harsh synthesized penalty sound
       setIsScreenShaking(true);
-      setStreak(0); // Break combo multiplier immediately
+      setStreak(0); 
       setFeedback({ text: "⚠️ JUMP START! PENALTY (-150 pts)", color: "text-red-500" });
       setScore((prev) => Math.max(0, prev - 150));
       
-      // Flash structural error alert and queue next lap sequence rapidly
       setTimeout(() => setIsScreenShaking(false), 400);
       setTimeout(() => {
         setFeedback(null);
@@ -161,7 +248,7 @@ export default function F1ReactionGame() {
       return;
     }
 
-    // SCENARIO B: IDLE STAGE (Tapped when screen hasn't begun preparing light boards yet)
+    // SCENARIO B: IDLE STAGE
     if (lightPhase === 0) return;
 
     // SCENARIO C: VALID GREEN LAUNCH TIME COMPUTED (Lights Out Phase 7)
@@ -177,18 +264,15 @@ export default function F1ReactionGame() {
       let newStreak = streak;
 
       if (reactionDeltaMs < 180) {
-        // Legendary Elite reaction threshold
         newStreak += 1;
         pointsEarned = Math.round(800 * (1 + newStreak * 0.15));
         roundFeedback = { text: `⚡ PERFECT LAUNCH! +${pointsEarned}`, color: "text-emerald-400 font-extrabold text-xl animate-bounce" };
       } else if (reactionDeltaMs <= 320) {
-        // High Quality fast response standard threshold
         newStreak += 1;
         pointsEarned = Math.round(450 * (1 + newStreak * 0.05));
         roundFeedback = { text: `🔥 GOOD LAUNCH! +${pointsEarned}`, color: "text-cyan-400" };
       } else {
-        // Sluggish launch or lagging response window
-        newStreak = 0; // reset sequence combo chain
+        newStreak = 0; 
         pointsEarned = Math.max(50, 200 - (reactionDeltaMs - 320));
         roundFeedback = { text: `🐌 SLOW REACTION! +${Math.round(pointsEarned)}`, color: "text-amber-500" };
       }
@@ -197,7 +281,6 @@ export default function F1ReactionGame() {
       setScore((prev) => prev + Math.round(pointsEarned));
       setFeedback(roundFeedback);
       
-      // Auto-progress to next round after dynamic short freeze loop
       setLightPhase(0);
       setTimeout(() => {
         setFeedback(null);
@@ -206,15 +289,14 @@ export default function F1ReactionGame() {
     }
   };
 
-  // Evaluation performance scoring ranges for GameEndScreen exports
-  const getRankAndPercentile = () => {
+  const metaMetrics = getRankAndPercentile();
+
+  function getRankAndPercentile() {
     if (score >= 8000) return { rank: "F1 WORLD CHAMPION", percentile: 99, msg: "Sub-human nerve routing. Absolute masterclass precision performance!" };
     if (score >= 5000) return { rank: "PRO PODIUM DRIVER", percentile: 92, msg: "Outstanding reaction velocity. Your focus index is hyper-tuned." };
     if (score >= 2500) return { rank: "MIDFIELD CONSTRUCTOR", percentile: 71, msg: "Solid awareness base. Shave off milliseconds on your transitions to reach pro standard." };
     return { rank: "ROOKIE TEST DRIVER", percentile: 38, msg: "Keep working your eye muscle tracking. Consistency beats raw rush!" };
-  };
-
-  const metaMetrics = getRankAndPercentile();
+  }
 
   return (
     <GameWrapper gameTitle="Reflex">
@@ -254,11 +336,9 @@ export default function F1ReactionGame() {
           {/* Core F1 Gantry Light Deck Array Housing */}
           <div className="my-6 w-full max-w-[340px] bg-[#0d101d] border-4 border-[#1f253d] p-4 rounded-xl flex items-center justify-between gap-2 shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)]">
             {[1, 2, 3, 4, 5].map((index) => {
-              // Determine current exact rendering state for red matrix sub-circles
               const isRedActive = lightPhase >= index && lightPhase <= 6;
               return (
                 <div key={index} className="flex flex-col gap-1 items-center bg-[#171c30] p-1.5 rounded-md border border-white/5 flex-1">
-                  {/* Pair of 2 vertical lights representing each F1 light tower */}
                   <div 
                     className={`w-6 h-6 rounded-full transition-all duration-70 ${
                       isRedActive 
@@ -304,9 +384,8 @@ export default function F1ReactionGame() {
             )}
           </div>
 
-          {/* Global Target Interceptor Pad instruction banner footer */}
           <div className="text-[11px] font-semibold text-[#5a627a] uppercase tracking-wider bg-black/20 w-full py-1.5 rounded-lg border border-white/[0.02]">
-            ⚡ Tap Anywhere Inside Box to Fire Launch System ⚡
+              Tap Anywhere Inside Box to Fire Launch System 
           </div>
         </div>
       )}

@@ -1,141 +1,131 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import React from "react";
+import Link from "next/link";
+import { Play, ArrowUp, Gamepad2 } from "lucide-react";
+import LandingPage from "@/components/landing/LandingPage";
 
-export default function Home() {
-  const router = useRouter();
+export default function Dashboard() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#050712] text-white flex items-center justify-center px-4 py-6 relative">
-      <div className="absolute top-[-140px] left-[-120px] w-96 h-96 bg-[#8b5cf6]/20 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-160px] right-[-120px] w-96 h-96 bg-[#3b82f6]/20 blur-[130px] rounded-full" />
-      <div className="absolute top-[35%] right-[-140px] w-72 h-72 bg-[#60a5fa]/10 blur-[100px] rounded-full" />
+    <div className="relative min-h-screen bg-[#060709] text-slate-100 overflow-x-hidden font-sans selection:bg-purple-500 selection:text-white">
 
-      <section className="relative w-full max-w-5xl mx-auto grid lg:grid-cols-2 gap-8 items-center">
-        <div className="text-center lg:text-left">
-          <p className="text-xs tracking-[0.45em] uppercase font-black bg-gradient-to-r from-[#7dd3fc] via-[#a78bfa] to-[#60a5fa] text-transparent bg-clip-text mb-5">
-            60 Second Brain
-          </p>
+      {/* Immersive Cosmic Aurora Background Overlay */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_-20%,rgba(88,28,135,0.25),transparent_60%),radial-gradient(circle_at_10%_40%,rgba(6,182,212,0.08),transparent_40%),radial-gradient(circle_at_90%_70%,rgba(244,63,94,0.06),transparent_50%)] pointer-events-none" />
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tight">
-            Test Your{" "}
-            <span className="bg-gradient-to-r from-[#a78bfa] to-[#60a5fa] text-transparent bg-clip-text">
-              Focus
-            </span>{" "}
-            in 60 Seconds
-          </h1>
+      {/* Micro Tech Grid Lines */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none" />
 
-          <p className="mt-6 text-[#b9c0d4] text-base sm:text-lg leading-8 max-w-xl mx-auto lg:mx-0">
-            A fast, simple focus challenge. Tap the highlighted number, build a
-            streak, and see how sharp your brain is today.
-          </p>
+      {/* Main Container */}
+      <div className="relative w-full mx-auto px-4 md:px-8 pt-6 pb-20 z-10 flex flex-col min-h-screen justify-between">
 
-          <div className="grid grid-cols-3 gap-3 mt-8 max-w-xl mx-auto lg:mx-0">
-            <div className="rounded-2xl bg-[#090c17]/80 border border-white/10 p-4">
-              <p className="text-xs text-[#8f96aa] uppercase tracking-widest">
-                Time
+        {/* Minimal High-Tech Floating Top Bar */}
+        <header className="w-full max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/5 mb-8">
+          {/* Logo Section */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-cyan-400 flex items-center justify-center font-black text-xs text-black tracking-tighter shrink-0">
+              60'S
+            </div>
+            <span className="text-xs sm:text-sm font-black tracking-widest text-slate-400">
+              UNIVERSE
+            </span>
+          </div>
+
+          {/* Action Link Button */}
+          <Link href={`/play/${'reaction'}`} className="block">
+            <div className="group relative overflow-hidden flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-mono text-slate-400 bg-white/5 border border-white/5 px-2.5 py-1.5 sm:px-3 rounded-full backdrop-blur-md transition-all duration-300 hover:border-white/20">
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent pointer-events-none" />
+              <Play className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-cyan-400 fill-cyan-400/20 animate-pulse shrink-0" />
+              <span className="relative z-10 whitespace-nowrap">
+                Play <b className="text-white font-bold">Game</b>
+              </span>
+            </div>
+          </Link>
+        </header>
+
+        {/* Clean Modular Hero Layout Integration Block */}
+        <LandingPage />
+
+        {/* Global Minimal Dashboard Analytics Counter Footer Row */}
+        <footer className="w-full max-w-7xl mx-auto px-4 sm:px-6 mt-20 border-t border-white/5 pt-12 pb-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+            
+            {/* Left Column: About Us details */}
+            <div className="md:col-span-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-gradient-to-tr from-purple-600 to-cyan-400 flex items-center justify-center font-black text-[10px] text-black tracking-tighter">
+                  60'S
+                </div>
+                <span className="text-xs font-black tracking-widest text-white">
+                  60'S UNIVERSE
+                </span>
+              </div>
+              <p className="text-sm text-slate-400 leading-relaxed max-w-md">
+                A micro-gaming nebula built to challenge human cognitive limits. 
+                Test your reaction speed, train decision-making pathways, and sharp-tune your memory through lightning-fast, 60-second interactive trials. 
               </p>
-              <p className="mt-2 text-2xl font-black text-[#60a5fa]">60s</p>
             </div>
 
-            <div className="rounded-2xl bg-[#090c17]/80 border border-white/10 p-4">
-              <p className="text-xs text-[#8f96aa] uppercase tracking-widest">
-                Average
-              </p>
-              <p className="mt-2 text-2xl font-black text-[#a78bfa]">50+</p>
-            </div>
-
-            <div className="rounded-2xl bg-[#090c17]/80 border border-white/10 p-4">
-              <p className="text-xs text-[#8f96aa] uppercase tracking-widest">
-                Elite
-              </p>
-              <p className="mt-2 text-2xl font-black text-[#60a5fa]">100+</p>
+            {/* Middle Column: Quick Links */}
+            <div className="md:col-span-3 space-y-3">
+              <h4 className="text-xs font-mono font-bold tracking-wider text-slate-300 uppercase">Core Arenas</h4>
+              <ul className="space-y-2 text-xs font-mono text-slate-400">
+                <li>
+                  <Link href="/play/reaction" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                    <Gamepad2 className="w-3 h-3" /> Reaction Test
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/play/memory" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                    <Gamepad2 className="w-3 h-3" /> Memory Burst
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/play/focus" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+                    <Gamepad2 className="w-3 h-3" /> Focus Control
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <div className="mt-8 space-y-3 max-w-xl mx-auto lg:mx-0">
-            <button
-              onClick={() => router.push("/play")}
-              className="w-full rounded-[1.4rem] bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6] py-4 text-white font-black text-lg tracking-widest shadow-[0_0_35px_rgba(96,165,250,0.45)] active:scale-95 transition"
-            >
-              ⚡ START CHALLENGE
-            </button>
+          <div className="border-t border-white/5 my-8" />
 
-            <p className="text-sm text-[#8f96aa]">
-              No login. No download. Just one minute of pure focus.
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-[11px] font-mono text-slate-500 order-2 sm:order-1">
+              &copy; {new Date().getFullYear()} 60'S Universe. All mind assets loaded.
             </p>
+
+            <button 
+              onClick={scrollToTop}
+              className="group relative overflow-hidden order-1 sm:order-2 flex items-center gap-2 text-[11px] font-mono text-slate-400 bg-white/5 border border-white/5 px-3 py-1.5 rounded-full backdrop-blur-md transition-all duration-300 hover:border-white/20 hover:text-white cursor-pointer"
+            >
+              <div className="absolute inset-0 -translate-x-full translate-y-full group-hover:translate-x-full group-hover:-translate-y-full transition-transform duration-700 ease-out bg-gradient-to-tr from-transparent via-purple-500/20 to-transparent pointer-events-none" />
+              <span>Return up</span>
+              <ArrowUp className="w-3.5 h-3.5 text-purple-400 group-hover:-translate-y-0.5 transition-transform duration-300" />
+            </button>
           </div>
-        </div>
+        </footer>
 
-        <div className="relative">
-          <div className="rounded-[2rem] border border-[#60a5fa]/30 bg-[#080b18]/90 shadow-[0_0_90px_rgba(96,165,250,0.22)] backdrop-blur-xl p-5 text-center overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(139,92,246,0.3),transparent_42%)]" />
+      </div>
 
-            <div className="relative">
-              <div className="flex justify-center gap-5 text-lg mb-3">
-                <span className="text-yellow-300">✦</span>
-                <span className="text-blue-400">◆</span>
-                <span className="text-purple-400">✦</span>
-                <span className="text-pink-400">◆</span>
-                <span className="text-yellow-300">✦</span>
-              </div>
-
-              <div className="mx-auto mb-4 w-24 h-24 rounded-full border-2 border-[#8b5cf6]/70 bg-[#12182a] flex items-center justify-center shadow-[0_0_55px_rgba(139,92,246,0.55)]">
-                <div className="text-5xl">🧠</div>
-              </div>
-
-              <div className="mx-auto mb-5 w-fit px-5 py-2 rounded-md bg-gradient-to-r from-[#6d28d9] via-[#7c3aed] to-[#2563eb] border border-white/15">
-                <p className="text-sm font-black tracking-widest">
-                  TODAY’S CHALLENGE
-                </p>
-              </div>
-
-              <p className="text-xs tracking-[0.35em] uppercase text-[#aeb7d4] font-black">
-                Can you beat
-              </p>
-
-              <h2 className="text-7xl sm:text-8xl font-black mt-1 bg-gradient-to-r from-[#a78bfa] to-[#60a5fa] text-transparent bg-clip-text">
-                50?
-              </h2>
-
-              <div className="mt-4 inline-flex rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#3b82f6] px-7 py-2 text-white font-black shadow-[0_0_28px_rgba(96,165,250,0.45)]">
-                ⚡ Focus Test
-              </div>
-
-              <p className="mt-5 text-[#dbeafe] text-sm leading-6">
-                Most players try again immediately after their first score.
-              </p>
-
-              <div className="grid grid-cols-2 gap-3 mt-5">
-                <div className="rounded-[1.3rem] bg-[#050814]/80 border border-[#8b9cff]/20 p-4">
-                  <p className="text-xs text-[#8f96aa] uppercase tracking-widest">
-                    Top Score
-                  </p>
-                  <p className="text-3xl font-black bg-gradient-to-r from-[#a78bfa] to-[#60a5fa] text-transparent bg-clip-text">
-                    100+
-                  </p>
-                  <p className="text-xs text-[#8f96aa]">Elite focus</p>
-                </div>
-
-                <div className="rounded-[1.3rem] bg-[#050814]/80 border border-[#8b9cff]/20 p-4">
-                  <p className="text-xs text-[#8f96aa] uppercase tracking-widest">
-                    Goal
-                  </p>
-                  <p className="text-3xl font-black text-[#60a5fa]">Beat 50</p>
-                  <p className="text-xs text-[#8f96aa]">First target</p>
-                </div>
-              </div>
-
-              <button
-                onClick={() => router.push("/play")}
-                className="mt-5 w-full rounded-[1.4rem] border border-[#60a5fa]/50 bg-[#050814]/80 py-4 font-black text-[#dbeafe] active:scale-95 transition"
-              >
-                PLAY NOW →
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+      {/* Target Tailwind Hidden Utility Helpers */}
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .no-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .mask-fade-edges {
+          mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, white 8%, white 92%, transparent);
+        }
+      `}</style>
+    </div>
   );
 }

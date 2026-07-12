@@ -30,7 +30,6 @@ export default function SequenceGame() {
   const sequenceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   
-  // 1. Add this ref near your other refs
   const screenRef = useRef(screen);
 
   useEffect(() => {
@@ -73,7 +72,6 @@ export default function SequenceGame() {
     };
   }, [screen]);
 
-  // 2. Add this effect below your timer effect
   useEffect(() => {
     if (
       screen === "playing" &&
@@ -136,12 +134,9 @@ export default function SequenceGame() {
 
     countdownRef.current = setInterval(() => {
       setCountdown((prev) => {
-        // 4. Update startCountdown() - replaced internal generator logic
         if (prev <= 1) {
           if (countdownRef.current) clearInterval(countdownRef.current);
-
           setScreen("playing");
-
           return 0;
         }
         playSound("start");
@@ -150,7 +145,6 @@ export default function SequenceGame() {
     }, 800);
   }
 
-  // 3. Replace your generateNextSequenceLevel() with this version
   async function generateNextSequenceLevel(nextSequence: number[]) {
     setSequence(nextSequence);
     setPlayerSequence([]);
@@ -258,10 +252,8 @@ export default function SequenceGame() {
       return currentScore;
     });
 
-    // 5. Update endGame() - Clear sequences right before changing screen state
     setSequence([]);
     setPlayerSequence([]);
-
     setScreen("end");
   }
 
@@ -315,40 +307,46 @@ export default function SequenceGame() {
 
       {screen === "playing" && (
         <div
-          className={`rounded-[2rem] border border-[#8b9cff]/25 bg-[#111421]/80 shadow-[0_0_70px_rgba(96,165,250,0.16)] backdrop-blur-xl p-5 transition ${
-            shake ? "animate-shake" : ".animate-shake"
+          style={{
+            backgroundImage: "radial-gradient(circle at 50% 120%, rgba(244,63,94,0.15), transparent 70%)"
+          }}
+          className={`rounded-[2rem] border border-rose-500/25 bg-[#121013]/90 shadow-[0_0_70px_rgba(244,63,94,0.12)] backdrop-blur-xl p-5 transition ${
+            shake ? "animate-shake border-rose-600 bg-rose-950/10" : ""
           }`}
         >
+          {/* Top Panel Metrics Header */}
           <div className="flex justify-between items-center mb-4">
             <div>
-              <p className="text-xs uppercase tracking-widest text-[#8f96aa]">Score</p>
-              <p className="text-4xl font-black bg-gradient-to-r from-[#a78bfa] to-[#60a5fa] text-transparent bg-clip-text">
+              <p className="text-xs uppercase tracking-widest text-[#9d8fa0]">Score</p>
+              <p className="text-4xl font-black bg-gradient-to-r from-pink-400 to-rose-500 text-transparent bg-clip-text">
                 {score}
               </p>
             </div>
 
             <div className="text-center">
-              <p className="text-xs uppercase tracking-widest text-[#8f96aa]">Chain Length</p>
-              <p className="text-xl font-black text-[#60a5fa]">
+              <span className="text-xs uppercase tracking-widest text-[#9d8fa0] block">Chain Length</span>
+              <p className="text-xl font-black text-pink-400 mt-1">
                 {sequence.length > 0 ? `${playerSequence.length}/${sequence.length}` : "-"}
               </p>
             </div>
 
             <div className="text-right">
-              <p className="text-xs uppercase tracking-widest text-[#8f96aa]">Time</p>
-              <p className={`text-4xl font-black ${timeLeft <= 10 ? "text-red-400 animate-pulse" : "text-[#60a5fa]"}`}>
+              <p className="text-xs uppercase tracking-widest text-[#9d8fa0]">Time</p>
+              <p className={`text-4xl font-black ${timeLeft <= 10 ? "text-red-500 animate-pulse" : "text-rose-400"}`}>
                 {timeLeft}
               </p>
             </div>
           </div>
 
-          <div className="h-3 bg-[#090c17]/80 border border-white/10 rounded-full mb-5 overflow-hidden">
+          {/* Time Limit Progress Gas Tube */}
+          <div className="h-3 bg-[#0d0a0e]/90 border border-white/5 rounded-full mb-5 overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#a78bfa] to-[#60a5fa] transition-all duration-500 shadow-[0_0_22px_rgba(96,165,250,0.75)]"
+              className="h-full bg-gradient-to-r from-pink-500 to-rose-500 transition-all duration-500 shadow-[0_0_22px_rgba(244,63,94,0.75)]"
               style={{ width: `${progress}%` }}
             />
           </div>
 
+          {/* Core Custom Styled Memory Sequence Grid Deck */}
           <div className="grid grid-cols-3 gap-3">
             {cells.map((cell) => {
               const isFlashing = activeFlashCell === cell;
@@ -360,18 +358,19 @@ export default function SequenceGame() {
                   disabled={isShowingSequence}
                   className={`aspect-square rounded-[26px] flex items-center justify-center transition-all duration-150 border select-none ${
                     isFlashing
-                      ? "bg-gradient-to-br from-[#60a5fa] to-[#a78bfa] border-[#c4b5fd] scale-105 shadow-[0_0_45px_rgba(96,165,250,0.95)]"
+                      ? "bg-gradient-to-br from-pink-400 to-rose-500 border-rose-300 scale-105 shadow-[0_0_45px_rgba(244,63,94,0.85)]"
                       : isShowingSequence
-                      ? "bg-[#090c17]/40 border-white/5 text-transparent cursor-not-allowed"
-                      : "bg-[#090c17]/75 border-white/10 hover:bg-[#151b2d] active:scale-95"
+                      ? "bg-[#0e0d14]/40 border-white/[0.02] text-transparent cursor-not-allowed"
+                      : "bg-[#0e0d14]/80 border-white/5 hover:bg-[#1a141b] hover:border-pink-500/20 active:scale-95"
                   }`}
                 />
               );
             })}
           </div>
 
+          {/* Sandbox Event Text Field Area */}
           <div className="h-7 mt-4 text-center text-sm font-black tracking-wide">
-            <span className={isShowingSequence ? "text-[#a78bfa]" : "text-[#60a5fa]"}>
+            <span className={isShowingSequence ? "text-pink-400" : "text-rose-400"}>
               {feedbackText}
             </span>
           </div>

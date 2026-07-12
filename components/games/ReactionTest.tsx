@@ -303,7 +303,7 @@ export default function F1ReactionGame() {
       {gameState === "START" && (
         <GameStartScreen
           bestScore={bestScore}
-          description={`Wait for the 5 F1 red lights to turn on sequentially.\n\nAS SOON AS THEY GO OUT... CLICK OR TAP immediately!\n\n⚠️ Jump starting before lights out drops points and your combo streak!`}
+          description={`Wait for the 5 F1 red lights to turn on sequentially.\n\nAS SOON AS THEY GO OUT... CLICK OR TAP immediately!\n\n⚠️ Jump starting before lights out drops points and your streak!`}
           onStart={startGame}
         />
       )}
@@ -313,15 +313,18 @@ export default function F1ReactionGame() {
       {gameState === "PLAYING" && (
         <div 
           onClick={handleTriggerInput}
+          style={{
+            backgroundImage: "radial-gradient(circle at 50% 120%, rgba(245,158,11,0.15), transparent 70%)"
+          }}
           className={`cursor-pointer select-none rounded-[2rem] border transition-all duration-200 p-6 text-center bg-[#111421]/90 shadow-2xl relative min-h-[380px] flex flex-col justify-between items-center ${
-            isScreenShaking ? "animate-bounce border-red-500 bg-red-950/20" : "border-[#8b9cff]/20 hover:border-blue-500/30"
+            isScreenShaking ? "animate-bounce border-red-500 bg-red-950/20" : "border-[#8b9cff]/20 hover:border-amber-500/40"
           }`}
         >
           {/* Header Dashboard Grid */}
           <div className="w-full grid grid-cols-3 gap-2 items-center bg-[#090c17]/80 rounded-2xl border border-white/5 p-3 text-xs tracking-wider">
             <div className="text-left">
               <span className="block text-[#8f96aa] uppercase text-[10px]">Time Left</span>
-              <span className={`text-lg font-black ${timer <= 10 ? "text-red-500 animate-pulse" : "text-blue-400"}`}>{timer}s</span>
+              <span className={`text-lg font-black ${timer <= 10 ? "text-red-500 animate-pulse" : "text-amber-500"}`}>{timer}s</span>
             </div>
             <div className="text-center">
               <span className="block text-[#8f96aa] uppercase text-[10px]">Streak</span>

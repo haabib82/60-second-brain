@@ -1,5 +1,5 @@
 // components/landing/games.ts
-import { Brain, Target, Zap, Calculator, Grid, Type } from "lucide-react";
+import { Brain, Target, Zap, Calculator, Grid, Type, Shuffle, Keyboard, Eye } from "lucide-react";
 
 export const GAMES = [
   {
@@ -74,4 +74,5 @@ export const GAMES = [
     players: "11.0k active",
     bgGraphic: "radial-gradient(circle at 50% 120%, rgba(217,70,239,0.15), transparent 70%)"
   },
+
 ];
